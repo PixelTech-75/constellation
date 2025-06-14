@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <!-- We only include this to explicitly loosen the CSP of various packager environments. It does not provide any security. -->
+  <!-- Explicitly loosen CSP for packager environments; does not provide security. -->
   <meta http-equiv="Content-Security-Policy" content="default-src * 'self' 'unsafe-inline' 'unsafe-eval' data: blob:">
   <title>Bomberman v1</title>
   <style>
@@ -64,9 +64,7 @@
       align-items: center;
       box-sizing: border-box;
     }
-    #loading {
-      
-    }
+    #loading {}
     .progress-bar-outer {
       border: 1px solid currentColor;
       height: 10px;
@@ -161,13 +159,12 @@
       background: #444;
       color: #fff3b0;
     }
-    
   </style>
   <meta name="theme-color" content="#000000">
 </head>
 <body>
-  <!-- Back button to go to home screen -->
-  <a href="home.html" class="back-btn">&larr; Back to Home</a>
+  <!-- Back button to go to home screen (adjust href as needed) -->
+  <a href="../home.html" class="back-btn">&larr; Back to Home</a>
 
   <div id="app"></div>
   <div id="launch" class="screen" hidden title="Click to start">
