@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Not an availible page</title>
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            min-height: 100vh;
+            min-width: 100vw;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            position: relative;
+        }
+        #background-canvas {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            z-index: 0;
+            display: block;
+        }
+        .container {
+            position: relative;
+            z-index: 1;
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100vw;
+            height: 90vh;
+        }
+        h1 {
+            color: #fff;
+            font-size: 2.5rem;
+            text-shadow: 0 2px 8px #000, 0 0 2px #222;
+            letter-spacing: 2px;
+            margin: 0;
+            padding: 1rem 2rem;
+            background: rgba(0,0,0,0.5);
+            border-radius: 10px;
+        }
+        footer {
+            width: 100vw;
+            text-align: center;
+            padding: 1rem 0;
+            background: rgba(0,0,0,0.7);
+            color: #ccc;
+            font-size: 1.1rem;
+            letter-spacing: 1px;
+            position: fixed;
+            left: 0;
+            bottom: 0;
+            z-index: 1;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="background-canvas"></canvas>
+    <div class="container">
+        <h1>Not an availible page</h1>
+    </div>
+    <footer>game launcher 2025</footer>
+    <script>
+        function randomColor() {
+            // Create vibrant, visible colors
+            const h = Math.floor(Math.random() * 360);
+            const s = Math.floor(40 + Math.random() * 40); // 40% - 80%
+            const l = Math.floor(35 + Math.random() * 40); // 35% - 75%
+            return `hsl(${h},${s}%,${l}%)`;
+        }
+
+        function drawMosaic() {
+            const canvas = document.getElementById('background-canvas');
+            const ctx = canvas.getContext('2d');
+            // Set canvas to window size
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+
+            const pixelSize = 24; // px, adjust for more/less detail
+            const cols = Math.ceil(canvas.width / pixelSize);
+            const rows = Math.ceil(canvas.height / pixelSize);
+
+            for (let y = 0; y < rows; y++) {
+                for (let x = 0; x < cols; x++) {
+                    ctx.fillStyle = randomColor();
+                    ctx.fillRect(
+                        x * pixelSize,
+                        y * pixelSize,
+                        pixelSize,
+                        pixelSize
+                    );
+                }
+            }
+        }
+
+        // Redraw mosaic on load and resize
+        window.onload = drawMosaic;
+        window.onresize = drawMosaic;
+    </script>
+</body>
+</html>
