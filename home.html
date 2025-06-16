@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <title>Constellation</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<style>
+  <style>
     body {
       background: #111;
       color: #fff;
@@ -19,6 +19,8 @@
     h1 {
       margin-top: 60px;
       letter-spacing: 2px;
+      position: relative;
+      z-index: 2;
     }
     .game-link-btn {
       display: inline-block;
@@ -33,12 +35,26 @@
       box-shadow: 0 0 24px #2b376b80, 0 0 8px #48e0ff80;
       transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
       cursor: pointer;
+      position: relative;
+      z-index: 2;
     }
     .game-link-btn:hover {
       background: linear-gradient(135deg, #272a4c 0%, #4cbfef 100%);
       color: #fff3b0;
       transform: scale(1.06);
       box-shadow: 0 0 32px #6af7ff, 0 0 16px #4cbfef;
+    }
+
+    /* --- Animated Stars --- */
+    #stars-bg {
+      position: fixed;
+      left: 0;
+      top: 0;
+      z-index: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      display: block;
     }
 
     /* --- Animated Waves --- */
@@ -49,7 +65,7 @@
       bottom: 0;
       width: 100vw;
       height: 180px;
-      z-index: 0;
+      z-index: 1;
       pointer-events: none;
       overflow: hidden;
     }
@@ -85,9 +101,13 @@
   </style>
 </head>
 <body>
-  <h1>Welcome to Constellation v1</h1>
-  <a href="bomberman/index.html" class="game-link-btn">Launch Bomberman</a>
+  <canvas id="stars-bg"></canvas>
+  <h1>Welcome to the Constellation Game Portal</h1>
   <a href="Splatoon/index.html" class="game-link-btn">Launch Splatoon</a>
+    <a href="bomberman/index.html" class="game-link-btn">Launch Bomberman</a>
+  <!-- <a href="bomberman/index.html" class="game-link-btn">Play Bomberman</a> -->
+
+  <!-- Animated Waves at the Bottom -->
   <div class="waves-container" aria-hidden="true">
     <svg class="wave wave1" viewBox="0 0 1440 120" preserveAspectRatio="none">
       <path d="M0,80 Q360,140 720,80 T1440,80 V120 H0 Z"
@@ -98,5 +118,89 @@
             fill="#dee2e6" fill-opacity="0.55"/>
     </svg>
   </div>
+
+  <script>
+    // Grey stars background animation
+    const canvas = document.getElementById('stars-bg');
+    const ctx = canvas.getContext('2d');
+    let stars = [];
+    const STAR_COLOR_LIST = [
+      'rgba(180,180,180,0.85)',
+      'rgba(140,140,140,0.55)',
+      'rgba(200,200,200,0.7)',
+      'rgba(100,100,100,0.5)',
+      'rgba(220,220,220,0.6)'
+    ];
+    const STAR_MIN_SIZE = 0.6;
+    const STAR_MAX_SIZE = 2.2;
+    const STAR_MIN_SPEED = 0.2;
+    const STAR_MAX_SPEED = 1.2;
+    const STAR_COUNT = 180;
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+
+    function createStar() {
+      return {
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        r: STAR_MIN_SIZE + Math.random() * (STAR_MAX_SIZE - STAR_MIN_SIZE),
+        color: STAR_COLOR_LIST[Math.floor(Math.random() * STAR_COLOR_LIST.length)],
+        speed: STAR_MIN_SPEED + Math.random() * (STAR_MAX_SPEED - STAR_MIN_SPEED)
+      }
+    }
+
+    function initStars() {
+      stars = [];
+      for (let i = 0; i < STAR_COUNT; i++) {
+        stars.push(createStar());
+      }
+    }
+
+    function updateStars() {
+      for (let star of stars) {
+        star.x -= star.speed;
+        if (star.x < -star.r) {
+          // Respawn at the right
+          star.x = canvas.width + star.r;
+          star.y = Math.random() * canvas.height;
+          star.r = STAR_MIN_SIZE + Math.random() * (STAR_MAX_SIZE - STAR_MIN_SIZE);
+          star.color = STAR_COLOR_LIST[Math.floor(Math.random() * STAR_COLOR_LIST.length)];
+          star.speed = STAR_MIN_SPEED + Math.random() * (STAR_MAX_SPEED - STAR_MIN_SPEED);
+        }
+      }
+    }
+
+    function drawStars() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      for (let star of stars) {
+        ctx.beginPath();
+        ctx.arc(star.x, star.y, star.r, 0, 2 * Math.PI, false);
+        ctx.fillStyle = star.color;
+        ctx.shadowColor = star.color;
+        ctx.shadowBlur = Math.max(0, star.r * 4 - 2);
+        ctx.fill();
+      }
+      ctx.shadowBlur = 0;
+    }
+
+    function animate() {
+      updateStars();
+      drawStars();
+      requestAnimationFrame(animate);
+    }
+
+    window.addEventListener('resize', () => {
+      resizeCanvas();
+      initStars();
+    });
+
+    // Initialize
+    resizeCanvas();
+    initStars();
+    animate();
+  </script>
 </body>
 </html>
