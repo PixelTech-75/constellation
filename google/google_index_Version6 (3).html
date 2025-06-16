@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Google</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      background: #181a1b;
+      color: #fff;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      height: 100vh;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      transition: background 0.3s;
+    }
+    .back-btn {
+      position: absolute;
+      top: 18px;
+      left: 20px;
+      background: #222a;
+      color: #fff;
+      padding: 10px 20px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-size: 1.1rem;
+      box-shadow: 0 2px 8px #0005;
+      border: none;
+      transition: background 0.2s;
+      z-index: 2;
+    }
+    .back-btn:hover {
+      background: #444d;
+    }
+    .open-btn {
+      padding: 18px 36px;
+      border-radius: 16px;
+      border: none;
+      background: #5a5a5a;
+      color: #fff;
+      font-size: 1.3rem;
+      font-family: inherit;
+      margin-top: 70px;
+      cursor: pointer;
+      box-shadow: 0 2px 12px #0004;
+      transition: background 0.2s, cursor 0.2s;
+      z-index: 1;
+    }
+    .open-btn:hover:disabled,
+    .open-btn:disabled {
+      background: transparent;
+      color: #fff;
+      cursor: not-allowed;
+      border: none;
+      box-shadow: none;
+      padding: 0;
+    }
+    .timer-block {
+      font-size: 2.1rem;
+      font-weight: 600;
+      letter-spacing: 1px;
+      margin-top: 70px;
+      color: #fff;
+      background: none;
+      border: none;
+      cursor: not-allowed;
+      z-index: 1;
+      text-align: center;
+      user-select: none;
+      transition: color 0.2s;
+      text-shadow: 0 2px 12px #0004;
+    }
+  </style>
+</head>
+<body>
+  <a href="../home.html" class="back-btn">← Back</a>
+  <button class="open-btn" id="open-proxy-btn">
+    Open Google Sim in New Tab
+  </button>
+  <div id="timerBlock" class="timer-block" style="display:none;"></div>
+  <script>
+    const btn = document.getElementById('open-proxy-btn');
+    const timerBlock = document.getElementById('timerBlock');
+    const DISABLE_DURATION_MS = 5 * 60 * 1000; // 5 minutes
+    const STORAGE_KEY = "googleOpenBtnDisabledUntil";
+
+    function formatTime(ms) {
+      const totalSec = Math.ceil(ms / 1000);
+      const min = Math.floor(totalSec / 60);
+      const sec = totalSec % 60;
+      return min + ":" + (sec < 10 ? "0" : "") + sec;
+    }
+
+    function setBtnDisabled(disabled, remainingMs = 0) {
+      if (disabled) {
+        // Hide button, show countdown text
+        btn.style.display = "none";
+        timerBlock.style.display = "block";
+        timerBlock.textContent = `Session Expired. Reopen in: ${formatTime(remainingMs)}`;
+      } else {
+        // Show button, hide countdown text
+        btn.style.display = "block";
+        timerBlock.style.display = "none";
+        btn.textContent = "Open Google Sim in New Tab";
+      }
+    }
+
+    function updateBtnState() {
+      const disabledUntil = parseInt(localStorage.getItem(STORAGE_KEY), 10);
+      const now = Date.now();
+      if (!isNaN(disabledUntil) && disabledUntil > now) {
+        setBtnDisabled(true, disabledUntil - now);
+        // Live update countdown
+        const interval = setInterval(() => {
+          const now2 = Date.now();
+          if (disabledUntil > now2) {
+            setBtnDisabled(true, disabledUntil - now2);
+          } else {
+            setBtnDisabled(false);
+            clearInterval(interval);
+            localStorage.removeItem(STORAGE_KEY);
+          }
+        }, 1000);
+      } else {
+        setBtnDisabled(false);
+        localStorage.removeItem(STORAGE_KEY);
+      }
+    }
+
+    btn.addEventListener('click', function() {
+      if (btn.disabled) return;
+      window.open('https://lunarsync.smartfoloo.space/uv/service/hvtrs8%2F-wuw%2Cgmoelg.aoo%2F', '_blank');
+      const disabledUntil = Date.now() + DISABLE_DURATION_MS;
+      localStorage.setItem(STORAGE_KEY, disabledUntil);
+      setBtnDisabled(true, DISABLE_DURATION_MS);
+
+      // Live update countdown
+      const interval = setInterval(() => {
+        const now = Date.now();
+        if (disabledUntil > now) {
+          setBtnDisabled(true, disabledUntil - now);
+        } else {
+          setBtnDisabled(false);
+          clearInterval(interval);
+          localStorage.removeItem(STORAGE_KEY);
+        }
+      }, 1000);
+    });
+
+    // On page load, check if button should be disabled
+    updateBtnState();
+  </script>
+</body>
+</html>
